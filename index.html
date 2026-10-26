@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fcecf4" />
+    <title>Minha biblioteca ♡</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <link rel="icon" type="image/png" href="img/coracao.png" />
+
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">♡</span>
+        <div>
+          <h2>Menu</h2>
+          <p>Seu universo</p>
+        </div>
+      </div>
+
+      <nav aria-label="Categorias da biblioteca">
+        <button type="button" class="nav-btn active" data-filter="Todas">
+          💻 Minha biblioteca
+        </button>
+        <button type="button" class="nav-btn" data-filter="Livro">
+          📚 Livros
+        </button>
+        <button type="button" class="nav-btn" data-filter="Mangá">
+          🌸 Mangás
+        </button>
+        <button type="button" class="nav-btn" data-filter="Manhwa">
+          💗 Manhwas
+        </button>
+        <button type="button" class="nav-btn" data-filter="Anime">
+          🎀 Animes
+        </button>
+        <button type="button" class="nav-btn" data-filter="Favoritos">
+          💕 Favoritos
+        </button>
+      </nav>
+
+      <div class="sidebar-backup">
+        <p class="backup-title">Sua biblioteca, sempre com você ♡</p>
+        <button type="button" id="export-backup" class="backup-btn">
+          ⇩ Exportar backup
+        </button>
+        <label for="import-backup" class="backup-btn import-label"
+          >⇧ Importar backup</label
+        >
+        <input
+          id="import-backup"
+          type="file"
+          accept=".json,application/json"
+          hidden
+        />
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">BEM-VINDA À SUA ESTANTE DIGITAL</p>
+          <h1>Minha biblioteca <span>♡</span></h1>
+          <p class="subtitle">
+            Um lugar para guardar suas histórias favoritas.
+          </p>
+        </div>
+        <button type="button" id="open-form" class="add-btn">
+          ＋ Nova obra
+        </button>
+      </header>
+
+      <section class="stats" aria-label="Estatísticas da biblioteca">
+        <article class="stat-card">
+          <span>📚</span>
+          <p>Total de obras</p>
+          <h2 id="total">0</h2>
+        </article>
+        <article class="stat-card">
+          <span>🌷</span>
+          <p>Em andamento</p>
+          <h2 id="progress">0</h2>
+        </article>
+        <article class="stat-card">
+          <span>✨</span>
+          <p>Concluídas</p>
+          <h2 id="completed">0</h2>
+        </article>
+      </section>
+
+      <section class="library">
+        <div class="section-heading">
+          <div>
+            <h2 id="library-heading">Minha coleção</h2>
+            <p id="result-count" class="muted">0 obras</p>
+          </div>
+          <button type="button" id="clear-filters" class="text-btn">
+            Limpar filtros
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <input
+            id="search"
+            type="search"
+            placeholder="🔍 Pesquisar obra..."
+            autocomplete="off"
+            aria-label="Pesquisar obra"
+          />
+          <select id="status-filter" aria-label="Filtrar por status">
+            <option value="Todos">Todos os status</option>
+            <option value="Quero ler">Quero ler</option>
+            <option value="Lendo">Lendo</option>
+            <option value="Assistindo">Assistindo</option>
+            <option value="Pausado">Pausado</option>
+            <option value="Concluído">Concluído</option>
+            <option value="Abandonado">Abandonado</option>
+          </select>
+          <select id="sort-filter" aria-label="Ordenar obras">
+            <option value="recent">Mais recentes</option>
+            <option value="title">Título (A–Z)</option>
+          </select>
+        </div>
+
+        <div id="book-grid" class="book-grid"></div>
+      </section>
+
+      <footer>
+        Feito com carinho ♡ <span>Cozy Library · HTML, CSS e JavaScript</span>
+      </footer>
+    </main>
+
+    <dialog id="book-dialog" class="book-dialog">
+      <form id="book-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">SUA PRÓXIMA AVENTURA</p>
+            <h2 id="form-heading">Adicionar nova obra ♡</h2>
+          </div>
+          <button
+            type="button"
+            id="close-form"
+            class="close-btn"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+        </div>
+
+        <input type="hidden" id="work-id" />
+
+        <label for="title">Título <span class="required">*</span></label>
+        <input
+          id="title"
+          name="title"
+          type="text"
+          maxlength="160"
+          placeholder="Nome da obra"
+          required
+        />
+
+        <label for="type">Tipo <span class="required">*</span></label>
+        <select id="type" name="type" required>
+          <option value="">Selecione o tipo</option>
+          <option value="Livro">Livro</option>
+          <option value="Mangá">Mangá</option>
+          <option value="Manhwa">Manhwa</option>
+          <option value="Anime">Anime</option>
+        </select>
+
+        <label for="cover">URL da capa (opcional)</label>
+        <input id="cover" name="cover" type="url" placeholder="https://..." />
+        <p class="field-help">
+          Você pode colar uma URL de imagem. A pesquisa automática de capas pode
+          ser adicionada depois.
+        </p>
+
+        <label for="cover-file">Ou escolher uma imagem do computador</label>
+        <input id="cover-file" type="file" accept="image/*" />
+        <img
+          id="cover-preview"
+          class="cover-preview hidden"
+          alt="Prévia da capa"
+        />
+
+        <label for="status">Status</label>
+        <select id="status" name="status" required>
+          <option value="Quero ler">Quero ler</option>
+          <option value="Lendo">Lendo</option>
+          <option value="Assistindo">Assistindo</option>
+          <option value="Pausado">Pausado</option>
+          <option value="Concluído">Concluído</option>
+          <option value="Abandonado">Abandonado</option>
+        </select>
+
+        <div class="form-row">
+          <div>
+            <label for="author">Autor / estúdio</label>
+            <input
+              id="author"
+              name="author"
+              type="text"
+              maxlength="120"
+              placeholder="Opcional"
+            />
+          </div>
+          <div>
+            <label for="genre-input">Gêneros</label>
+            <div class="genre-selector">
+              <div id="genre-tags" class="genre-tags"></div>
+              <input
+                id="genre-input"
+                type="text"
+                placeholder="Clique para escolher ou digite..."
+                list="genre-options"
+                autocomplete="off"
+              />
+            </div>
+            <datalist id="genre-options">
+              <option value="Ação"></option>
+              <option value="Aventura"></option>
+              <option value="Comédia"></option>
+              <option value="Drama"></option>
+              <option value="Romantasia"></option>
+              <option value="Fantasia"></option>
+              <option value="Ficção Científica"></option>
+              <option value="Isekai"></option>
+              <option value="Romance"></option>
+              <option value="Slice of Life"></option>
+              <option value="Suspense"></option>
+              <option value="Terror"></option>
+              <option value="Yaoi / BL"></option>
+              <option value="Yuri / GL"></option>
+              <option value="Policial / Mistério"></option>
+              <option value="Histórico"></option>
+            </datalist>
+            <input type="hidden" id="genre" name="genre" />
+          </div>
+        </div>
+
+        <div class="rating-field">
+          <label>Sua nota</label>
+          <div
+            class="stars-container"
+            id="rating-stars"
+            role="radiogroup"
+            aria-label="Sua nota de 0 a 5 estrelas"
+          ></div>
+          <input type="hidden" id="rating" name="rating" value="" />
+        </div>
+
+        <label for="notes">Anotações (opcional)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="4"
+          maxlength="1500"
+          placeholder="Onde você parou? O que achou da obra?"
+        ></textarea>
+
+        <div class="form-actions">
+          <button type="button" id="cancel-form" class="cancel-btn">
+            Cancelar
+          </button>
+          <button type="submit" class="add-btn">Salvar obra ♡</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
