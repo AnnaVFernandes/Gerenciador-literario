@@ -1,0 +1,108 @@
+.book-dialog {
+  width: min(540px, calc(100% - 24px));
+  max-height: 85vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text);
+  background: var(--white);
+  box-shadow: 0 20px 70px #48243b33;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--pink) var(--pink-light);
+}
+
+.book-dialog::-webkit-scrollbar {
+  width: 6px;
+}
+
+.book-dialog::-webkit-scrollbar-track {
+  background: var(--pink-light);
+  border-radius: 10px;
+}
+
+.book-dialog::-webkit-scrollbar-thumb {
+  background: var(--pink);
+  border-radius: 10px;
+}
+
+.book-dialog::-webkit-scrollbar-thumb:hover {
+  background: var(--pink-dark);
+}
+
+.book-dialog::backdrop {
+  background: #38243270;
+  backdrop-filter: blur(3px);
+}
+
+#book-form {
+  display: grid;
+  gap: 10px;
+  padding: clamp(18px, 4vw, 28px);
+}
+
+.dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.dialog-heading h2 {
+  margin: 0;
+  font:
+    700 23px "Quicksand",
+    sans-serif;
+}
+
+#book-form label {
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.required {
+  color: #d34f87;
+}
+
+.field-help {
+  margin: -4px 0 2px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-row > div {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.cover-preview {
+  width: 86px;
+  max-height: 120px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.cover-preview:not([src]),
+.cover-preview[src=""] {
+  display: none;
+}

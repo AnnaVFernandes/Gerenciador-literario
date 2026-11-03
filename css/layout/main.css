@@ -1,0 +1,46 @@
+.main-content {
+  margin-left: 250px;
+  padding: 36px clamp(20px, 4vw, 56px) 25px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 29px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--pink-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+h1 {
+  margin: 0 0 7px;
+  font:
+    700 clamp(25px, 3vw, 34px) "Quicksand",
+    sans-serif;
+}
+
+h1 span {
+  color: var(--pink);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 35px;
+  color: #b5a4af;
+  font-size: 11px;
+}

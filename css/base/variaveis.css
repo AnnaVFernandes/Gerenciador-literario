@@ -1,0 +1,14 @@
+:root {
+  --pink: #d783aa;
+  --pink-dark: #a9507b;
+  --pink-light: #fcecf4;
+  --lavender: #f1edff;
+  --peach: #fff0e7;
+  --mint: #e9f7ef;
+  --background: #fff9fc;
+  --white: #fff;
+  --text: #584552;
+  --muted: #998895;
+  --border: #f1e2eb;
+  --shadow: 0 12px 32px rgba(134, 76, 108, 0.08);
+}

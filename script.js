@@ -1,4 +1,4 @@
-(() => {
+/**(() => {
   "use strict";
   const STORAGE_KEY = "cozyLibrary.works.v1";
   const MAX_BACKUP_SIZE = 10 * 1024 * 1024;
@@ -596,4 +596,4 @@
   });
 
   render();
-})();
+})();*/

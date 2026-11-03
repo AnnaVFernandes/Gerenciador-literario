@@ -1,0 +1,35 @@
+.add-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 17px;
+  background: var(--pink);
+  color: white;
+  font-weight: 800;
+  box-shadow: 0 5px 13px #d783aa2b;
+}
+
+.add-btn:hover {
+  background: var(--pink-dark);
+}
+
+.cancel-btn {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: white;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.cancel-btn:hover {
+  background: var(--pink-light);
+}
+
+.close-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: white;
+  color: var(--muted);
+}

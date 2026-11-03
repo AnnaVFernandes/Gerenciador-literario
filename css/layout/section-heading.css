@@ -1,0 +1,35 @@
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.section-heading h2 {
+  margin: 0 0 3px;
+  font:
+    700 21px "Quicksand",
+    sans-serif;
+}
+
+.section-heading p {
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.text-btn {
+  border: 0;
+  background: transparent;
+  color: var(--pink-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}

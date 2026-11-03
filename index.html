@@ -5,13 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fcecf4" />
     <title>Minha biblioteca ♡</title>
-    <link rel="stylesheet" href="style.css" />
+
+    <!-- ======================================================================
+         FAVICON E FONTES
+    ======================================================================= -->
+    <link rel="icon" type="image/png" href="img/coracao.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap"
+    />
+
+    <!-- ======================================================================
+         CSS
+    ======================================================================= -->
+    <!-- Base -->
+    <link rel="stylesheet" href="css/base/variaveis.css" />
+    <link rel="stylesheet" href="css/base/reset.css" />
+    <link rel="stylesheet" href="css/base/formularios.css" />
+
+    <!-- Layout -->
+    <link rel="stylesheet" href="css/layout/sidebar.css" />
+    <link rel="stylesheet" href="css/layout/main.css" />
+    <link rel="stylesheet" href="css/layout/section-heading.css" />
+
+    <!-- Componentes -->
+    <link rel="stylesheet" href="css/componentes/botoes.css" />
+    <link rel="stylesheet" href="css/componentes/stats.css" />
+    <link rel="stylesheet" href="css/componentes/toolbar.css" />
+    <link rel="stylesheet" href="css/componentes/book-grid.css" />
+    <link rel="stylesheet" href="css/componentes/dialog.css" />
+    <link rel="stylesheet" href="css/componentes/rating.css" />
+    <link rel="stylesheet" href="css/componentes/genre-tags.css" />
+    <link rel="stylesheet" href="css/componentes/upload.css" />
+    <link rel="stylesheet" href="css/componentes/toast.css" />
+
+    <!-- Responsivo -->
+    <link rel="stylesheet" href="css/responsivo.css" />
   </head>
 
-  <link rel="icon" type="image/png" href="img/coracao.png" />
-
   <body>
+    <!-- ======================================================================
+         SIDEBAR (MENU LATERAL E BACKUP)
+    ======================================================================= -->
     <aside class="sidebar">
+      <!-- Cabeçalho da Sidebar -->
       <div class="brand">
         <span class="brand-icon">♡</span>
         <div>
@@ -20,7 +60,8 @@
         </div>
       </div>
 
-      <nav aria-label="Categorias da biblioteca">
+      <!-- Navegação Principal -->
+      <nav class="navigation" aria-label="Categorias da biblioteca">
         <button type="button" class="nav-btn active" data-filter="Todas">
           💻 Minha biblioteca
         </button>
@@ -41,14 +82,17 @@
         </button>
       </nav>
 
+      <!-- Área de Backup -->
       <div class="sidebar-backup">
         <p class="backup-title">Sua biblioteca, sempre com você ♡</p>
+
         <button type="button" id="export-backup" class="backup-btn">
           ⇩ Exportar backup
         </button>
-        <label for="import-backup" class="backup-btn import-label"
-          >⇧ Importar backup</label
-        >
+
+        <label for="import-backup" class="backup-btn import-label">
+          ⇧ Importar backup
+        </label>
         <input
           id="import-backup"
           type="file"
@@ -58,7 +102,11 @@
       </div>
     </aside>
 
+    <!-- ======================================================================
+         CONTEÚDO PRINCIPAL
+    ======================================================================= -->
     <main class="main-content">
+      <!-- Cabeçalho da Página -->
       <header class="page-header">
         <div>
           <p class="eyebrow">BEM-VINDA À SUA ESTANTE DIGITAL</p>
@@ -72,25 +120,34 @@
         </button>
       </header>
 
+      <!-- Estatísticas -->
       <section class="stats" aria-label="Estatísticas da biblioteca">
         <article class="stat-card">
           <span>📚</span>
-          <p>Total de obras</p>
-          <h2 id="total">0</h2>
+          <div>
+            <p>Total de obras</p>
+            <h2 id="total">0</h2>
+          </div>
         </article>
         <article class="stat-card">
           <span>🌷</span>
-          <p>Em andamento</p>
-          <h2 id="progress">0</h2>
+          <div>
+            <p>Em andamento</p>
+            <h2 id="progress">0</h2>
+          </div>
         </article>
         <article class="stat-card">
           <span>✨</span>
-          <p>Concluídas</p>
-          <h2 id="completed">0</h2>
+          <div>
+            <p>Concluídas</p>
+            <h2 id="completed">0</h2>
+          </div>
         </article>
       </section>
 
+      <!-- Biblioteca -->
       <section class="library">
+        <!-- Título da Coleção e Botão Limpar Filtros -->
         <div class="section-heading">
           <div>
             <h2 id="library-heading">Minha coleção</h2>
@@ -101,6 +158,7 @@
           </button>
         </div>
 
+        <!-- Barra de Ferramentas (Busca e Ordenação) -->
         <div class="toolbar">
           <input
             id="search"
@@ -124,16 +182,23 @@
           </select>
         </div>
 
+        <!-- Onde os cards dos livros são renderizados via JS -->
         <div id="book-grid" class="book-grid"></div>
       </section>
 
+      <!-- Rodapé -->
       <footer>
-        Feito com carinho ♡ <span>Cozy Library · HTML, CSS e JavaScript</span>
+        <span>Feito com carinho ♡</span>
+        <span></span>
       </footer>
     </main>
 
+    <!-- ======================================================================
+         FORMULÁRIO DE NOVA OBRA / EDIÇÃO
+    ======================================================================= -->
     <dialog id="book-dialog" class="book-dialog">
       <form id="book-form">
+        <!-- Cabeçalho do Modal -->
         <div class="dialog-heading">
           <div>
             <p class="eyebrow">SUA PRÓXIMA AVENTURA</p>
@@ -149,9 +214,11 @@
           </button>
         </div>
 
+        <!-- ID oculto (para edição) -->
         <input type="hidden" id="work-id" />
 
-        <label for="title">Título <span class="required">*</span></label>
+        <!-- Campo: Título -->
+        <label for="title"> Título <span class="required">*</span> </label>
         <input
           id="title"
           name="title"
@@ -161,7 +228,8 @@
           required
         />
 
-        <label for="type">Tipo <span class="required">*</span></label>
+        <!-- Campo: Tipo -->
+        <label for="type"> Tipo <span class="required">*</span> </label>
         <select id="type" name="type" required>
           <option value="">Selecione o tipo</option>
           <option value="Livro">Livro</option>
@@ -170,21 +238,31 @@
           <option value="Anime">Anime</option>
         </select>
 
+        <!-- Campo: URL da Capa -->
         <label for="cover">URL da capa (opcional)</label>
         <input id="cover" name="cover" type="url" placeholder="https://..." />
         <p class="field-help">
-          Você pode colar uma URL de imagem. A pesquisa automática de capas pode
-          ser adicionada depois.
+          Você pode colar uma URL de imagem ou escolher uma imagem salva no seu
+          computador.
         </p>
 
-        <label for="cover-file">Ou escolher uma imagem do computador</label>
-        <input id="cover-file" type="file" accept="image/*" />
+        <!-- Campo: Upload de Capa -->
+        <label for="cover-file">Imagem da capa</label>
+        <input
+          id="cover-file"
+          class="cover-file-input"
+          type="file"
+          accept="image/*"
+        />
+
+        <!-- Preview da Capa -->
         <img
           id="cover-preview"
           class="cover-preview hidden"
           alt="Prévia da capa"
         />
 
+        <!-- Status -->
         <label for="status">Status</label>
         <select id="status" name="status" required>
           <option value="Quero ler">Quero ler</option>
@@ -195,7 +273,9 @@
           <option value="Abandonado">Abandonado</option>
         </select>
 
+        <!-- Autor e Gêneros -->
         <div class="form-row">
+          <!-- Autor -->
           <div>
             <label for="author">Autor / estúdio</label>
             <input
@@ -206,6 +286,8 @@
               placeholder="Opcional"
             />
           </div>
+
+          <!-- Gêneros -->
           <div>
             <label for="genre-input">Gêneros</label>
             <div class="genre-selector">
@@ -213,11 +295,13 @@
               <input
                 id="genre-input"
                 type="text"
-                placeholder="Clique para escolher ou digite..."
+                placeholder="Escolha ou digite..."
                 list="genre-options"
                 autocomplete="off"
               />
             </div>
+
+            <!-- Lista de gêneros -->
             <datalist id="genre-options">
               <option value="Ação"></option>
               <option value="Aventura"></option>
@@ -236,10 +320,13 @@
               <option value="Policial / Mistério"></option>
               <option value="Histórico"></option>
             </datalist>
+
+            <!-- Gêneros -->
             <input type="hidden" id="genre" name="genre" />
           </div>
         </div>
 
+        <!-- Avaliação por Estrelas -->
         <div class="rating-field">
           <label>Sua nota</label>
           <div
@@ -251,6 +338,7 @@
           <input type="hidden" id="rating" name="rating" value="" />
         </div>
 
+        <!-- Anotações -->
         <label for="notes">Anotações (opcional)</label>
         <textarea
           id="notes"
@@ -260,6 +348,7 @@
           placeholder="Onde você parou? O que achou da obra?"
         ></textarea>
 
+        <!-- Botões -->
         <div class="form-actions">
           <button type="button" id="cancel-form" class="cancel-btn">
             Cancelar
@@ -269,7 +358,14 @@
       </form>
     </dialog>
 
+    <!-- ======================================================================
+         NOTIFICAÇÕES
+    ======================================================================= -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="script.js"></script>
+
+    <!-- ======================================================================
+     JAVASCRIPT 
+    ======================================================================= -->
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
