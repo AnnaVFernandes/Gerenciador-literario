@@ -96,7 +96,7 @@ export function initDialog() {
 
     if (!next) return toast("Confira os dados preenchidos.");
 
-    if (!upsertWork(next, existing?.id)) return;
+    if (!(await upsertWork(next, existing?.id))) return;
 
     dialog().close();
     resetForm();
@@ -110,7 +110,7 @@ export function initDialog() {
 }
 
 export function initGridActions() {
-  $("#book-grid").addEventListener("click", (event) => {
+  $("#book-grid").addEventListener("click", async (event) => {
     const button = event.target.closest("button[data-action]");
     if (!button) return;
     const action = button.dataset.action;
@@ -127,7 +127,7 @@ export function initGridActions() {
       toggleFavorite(id);
     } else if (action === "delete") {
       if (!confirm(`Deseja excluir "${work.title}"?`)) return;
-      if (removeWork(id)) {
+      if (await removeWork(id)) {
         render();
         toast("Obra removida da biblioteca.");
       }

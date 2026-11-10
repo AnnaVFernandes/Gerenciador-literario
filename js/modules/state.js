@@ -1,4 +1,4 @@
-import { loadWorks } from "./storage.js";
+import { getWorks } from "./api.js";
 
 export const state = {
   works: [],
@@ -6,8 +6,9 @@ export const state = {
   toastTimeout: null,
 };
 
-export function initState() {
-  state.works = loadWorks();
+// Carrega as obras do back end
+export async function initState() {
+  state.works = await getWorks();
 }
 
 export function setWorks(next) {

@@ -1,33 +1,39 @@
 import { state, setWorks } from "./state.js";
-import { persist } from "./storage.js";
+import { createWork, updateWork, deleteWork } from "./api.js";
 import { toast } from "./toast.js";
-import { createId } from "./utils.js";
 import { render } from "./render.js";
 
-function persistWithToast() {
-  return persist(state.works, {
-    onError: () =>
-      toast(
-        "Não foi possível salvar. O armazenamento pode estar cheio; tente reduzir as imagens locais.",
-      ),
-  });
-}
-
-export function upsertWork(next, existingId) {
-  const oldWorks = state.works;
-
-  setWorks(
-    existingId
-      ? state.works.map((w) => (w.id === existingId ? next : w))
-      : [next, ...state.works],
-  );
-
-  if (!persistWithToast()) {
-    setWorks(oldWorks);
+// Salva (cria ou atualiza) a obra no back end e só então atualiza a tela.
+export async function upsertWork(next, existingId) {
+  try {
+    if (existingId) {
+      const saved = await updateWork({ ...next, id: existingId });
+      setWorks(state.works.map((w) => (w.id === existingId ? saved : w)));
+    } else {
+      // O back end gera o Id; usamos o objeto devolvido por ele.
+      const saved = await createWork(next);
+      setWorks([saved, ...state.works]);
+    }
+    return true;
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Não foi possível salvar a obra.");
     return false;
   }
+}
 
-  return true;
+async function saveFavorite(id, favorite) {
+  const work = state.works.find((w) => w.id === id);
+  if (!work) return;
+
+  try {
+    const saved = await updateWork({ ...work, favorite });
+    setWorks(state.works.map((w) => (w.id === id ? saved : w)));
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Não foi possível atualizar o favorito.");
+  }
+  render();
 }
 
 export function toggleFavorite(id) {
@@ -36,19 +42,7 @@ export function toggleFavorite(id) {
   if (!work) return;
 
   if (!work.favorite) {
-    const oldWorks = state.works;
-
-    setWorks(
-      state.works.map((w) =>
-        w.id === id ? { ...w, favorite: true, updatedAt: Date.now() } : w,
-      ),
-    );
-
-    if (!persistWithToast()) {
-      setWorks(oldWorks);
-    }
-
-    render();
+    saveFavorite(id, true);
     return;
   }
 
@@ -68,20 +62,7 @@ export function toggleFavorite(id) {
   function finishBreaking() {
     if (finished) return;
     finished = true;
-
-    const oldWorks = state.works;
-
-    setWorks(
-      state.works.map((w) =>
-        w.id === id ? { ...w, favorite: false, updatedAt: Date.now() } : w,
-      ),
-    );
-
-    if (!persistWithToast()) {
-      setWorks(oldWorks);
-    }
-
-    render();
+    saveFavorite(id, false);
   }
 
   button.addEventListener("animationend", finishBreaking, {
@@ -91,19 +72,14 @@ export function toggleFavorite(id) {
   setTimeout(finishBreaking, 650);
 }
 
-export function removeWork(id) {
-  const oldWorks = state.works;
-
-  setWorks(state.works.filter((w) => w.id !== id));
-
-  if (!persistWithToast()) {
-    setWorks(oldWorks);
+export async function removeWork(id) {
+  try {
+    await deleteWork(id);
+    setWorks(state.works.filter((w) => w.id !== id));
+    return true;
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Não foi possível excluir a obra.");
     return false;
   }
-
-  return true;
-}
-
-export function createIdSafe() {
-  return createId();
 }
