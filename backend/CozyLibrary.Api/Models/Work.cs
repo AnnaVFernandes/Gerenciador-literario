@@ -26,6 +26,8 @@
 
         public string? Notes { get; set; } //Anotações
 
+        public string? ReviewHtml { get; set; } //Resenha em HTML
+
         public bool Favorite { get; set; } = false; //Favorito
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; //Data de criação

@@ -55,6 +55,9 @@ namespace CozyLibrary.Api.Migrations
                     b.Property<decimal>("Rating")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("ReviewHtml")
+                        .HasColumnType("text");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");

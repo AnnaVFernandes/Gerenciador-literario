@@ -2,12 +2,16 @@
   position: fixed;
   inset: 0 auto 0 0;
   width: 250px;
+  height: 100vh;
   padding: 28px 18px 20px;
   background: var(--white);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  z-index: 2;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 100;
+  box-sizing: border-box;
 }
 
 .brand {
@@ -15,6 +19,7 @@
   align-items: center;
   gap: 11px;
   padding: 0 8px 30px;
+  flex-shrink: 0;
 }
 
 .brand-icon {
@@ -45,6 +50,7 @@
 nav {
   display: grid;
   gap: 7px;
+  flex-shrink: 0;
 }
 
 .nav-btn {
@@ -69,6 +75,7 @@ nav {
   margin-top: auto;
   padding: 18px 4px 0;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .backup-title {
@@ -94,4 +101,13 @@ nav {
 .backup-btn:hover {
   background: var(--pink-light);
   color: var(--pink-dark);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--pink-light);
+  border-radius: 10px;
 }

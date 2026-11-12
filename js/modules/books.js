@@ -10,7 +10,7 @@ export async function upsertWork(next, existingId) {
       const saved = await updateWork({ ...next, id: existingId });
       setWorks(state.works.map((w) => (w.id === existingId ? saved : w)));
     } else {
-      // O back end gera o Id; usamos o objeto devolvido por ele.
+      // O back end gera o Id
       const saved = await createWork(next);
       setWorks([saved, ...state.works]);
     }

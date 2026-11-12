@@ -12,16 +12,19 @@ public class WorkController : ControllerBase
 {
     private readonly CozyLibraryDbContext _context;
     private readonly ICurrentUserService _currentUser;
+    private readonly IWebHostEnvironment _environment;
 
     private IQueryable<Work> CurrentUserWorks =>
         _context.Works.Where(work => work.OwnerUserId == _currentUser.UserId);
 
     public WorkController(
         CozyLibraryDbContext context,
-        ICurrentUserService currentUser)
+        ICurrentUserService currentUser,
+        IWebHostEnvironment environment)
     {
         _context = context;
         _currentUser = currentUser;
+        _environment = environment;
     }
 
     [HttpGet]
@@ -33,6 +36,49 @@ public class WorkController : ControllerBase
             .ToListAsync();
 
         return Ok(works);
+    }
+
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
+    {
+        // Verifica se uma imagem foi enviada
+        if (file == null || file.Length == 0)
+            return BadRequest("Nenhuma imagem foi enviada.");
+
+        // Limite de 2 MB
+        if (file.Length > 2 * 1024 * 1024)
+            return BadRequest("A imagem não pode ultrapassar 2 MB.");
+
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+            return BadRequest("Formato de imagem não permitido.");
+
+        var fileName = $"{Guid.NewGuid()}{extension}";
+
+        var imagesFolder = Path.Combine(
+            _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"),
+            "images"
+        );
+
+        Directory.CreateDirectory(imagesFolder);
+
+        var filePath = Path.Combine(imagesFolder, fileName);
+
+        // Salva a imagem
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        // Endereço público da imagem
+        var imageUrl = $"/images/{fileName}";
+
+        return Ok(new
+        {
+            url = imageUrl,
+            fileName = fileName
+        });
     }
 
     [HttpGet("{id:guid}")]
@@ -84,6 +130,7 @@ public class WorkController : ControllerBase
         work.Total = updatedWork.Total;
         work.Rating = updatedWork.Rating;
         work.Notes = updatedWork.Notes;
+        work.ReviewHtml = updatedWork.ReviewHtml;
         work.Favorite = updatedWork.Favorite;
         work.UpdatedAt = DateTime.UtcNow;
 

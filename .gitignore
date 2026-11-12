@@ -1,6 +1,4 @@
-﻿# =========================
-# Arquivos do .NET (C#)
-# =========================
+﻿# Arquivos do .NET (C#)
 [Bb]in/
 [Oo]bj/
 .vs/
@@ -9,23 +7,17 @@
 *.userosscache
 *.sln.docstates
 
-# =========================
 # Configurações locais e Segredos
-# =========================
 appsettings.*.json
 !appsettings.json
 .env
 secrets.json
 
-# =========================
 # Front-end (JavaScript / Node)
-# =========================
 node_modules/
 npm-debug.log*
 
-# =========================
-# Sistema Operacional e Editores
-# =========================
+# Sistema Operacional e Editores 
 .DS_Store
 Thumbs.db
 Desktop.ini

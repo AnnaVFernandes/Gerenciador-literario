@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fcecf4" />
-    <title>Minha biblioteca ♡</title>
+    <title>Minha histórias ♡</title>
 
     <!-- ======================================================================
          FAVICON E FONTES
@@ -44,155 +44,168 @@
 
     <!-- Responsivo -->
     <link rel="stylesheet" href="css/responsivo.css" />
+
+    <!-- Editor de texto: Quill.js -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/componentes/review-dialog.css" />
+
+    <!-- Modal de resenha -->
+    <link rel="stylesheet" href="css/componentes/review-dialog.css" />
   </head>
 
   <body>
-    <!-- ======================================================================
+    <!--Abertura do Layout-->
+    <div class="app-layout">
+      <!-- ======================================================================
          SIDEBAR (MENU LATERAL E BACKUP)
     ======================================================================= -->
-    <aside class="sidebar">
-      <!-- Cabeçalho da Sidebar -->
-      <div class="brand">
-        <span class="brand-icon">♡</span>
-        <div>
-          <h2>Menu</h2>
-          <p>Seu universo</p>
+      <aside class="sidebar">
+        <!-- Cabeçalho da Sidebar -->
+        <div class="brand">
+          <span class="brand-icon">♡</span>
+          <div>
+            <h2>Menu</h2>
+            <p>Seu universo</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Navegação Principal -->
-      <nav class="navigation" aria-label="Categorias da biblioteca">
-        <button type="button" class="nav-btn active" data-filter="Todas">
-          💻 Minha biblioteca
-        </button>
-        <button type="button" class="nav-btn" data-filter="Livro">
-          📚 Livros
-        </button>
-        <button type="button" class="nav-btn" data-filter="Mangá">
-          🌸 Mangás
-        </button>
-        <button type="button" class="nav-btn" data-filter="Manhwa">
-          💗 Manhwas
-        </button>
-        <button type="button" class="nav-btn" data-filter="Anime">
-          🎀 Animes
-        </button>
-        <button type="button" class="nav-btn" data-filter="Favoritos">
-          💕 Favoritos
-        </button>
-      </nav>
+        <!-- Navegação Principal -->
+        <nav class="navigation" aria-label="Categorias da biblioteca">
+          <button type="button" class="nav-btn active" data-filter="Todas">
+            💻 Minhas Histórias
+          </button>
+          <button type="button" class="nav-btn" data-filter="Livro">
+            📚 Livros
+          </button>
+          <button type="button" class="nav-btn" data-filter="Mangá">
+            🌸 Mangás
+          </button>
+          <button type="button" class="nav-btn" data-filter="Manhwa">
+            💗 Manhwas
+          </button>
+          <button type="button" class="nav-btn" data-filter="Anime">
+            🎀 Animes
+          </button>
+          <button type="button" class="nav-btn" data-filter="Favoritos">
+            💕 Favoritos
+          </button>
+        </nav>
 
-      <!-- Área de Backup -->
-      <div class="sidebar-backup">
-        <p class="backup-title">Sua biblioteca, sempre com você ♡</p>
+        <!-- Área de Backup -->
+        <div class="sidebar-backup">
+          <p class="backup-title">Sua biblioteca, sempre com você ♡</p>
 
-        <button type="button" id="export-backup" class="backup-btn">
-          ⇩ Exportar backup
-        </button>
+          <button type="button" id="export-backup" class="backup-btn">
+            ⇩ Exportar backup
+          </button>
 
-        <label for="import-backup" class="backup-btn import-label">
-          ⇧ Importar backup
-        </label>
-        <input
-          id="import-backup"
-          type="file"
-          accept=".json,application/json"
-          hidden
-        />
-      </div>
-    </aside>
+          <label for="import-backup" class="backup-btn import-label">
+            ⇧ Importar backup
+          </label>
+          <input
+            id="import-backup"
+            type="file"
+            accept=".json,application/json"
+            hidden
+          />
+        </div>
+      </aside>
 
-    <!-- ======================================================================
+      <!-- ======================================================================
          CONTEÚDO PRINCIPAL
     ======================================================================= -->
-    <main class="main-content">
-      <!-- Cabeçalho da Página -->
-      <header class="page-header">
-        <div>
-          <p class="eyebrow">BEM-VINDA À SUA ESTANTE DIGITAL</p>
-          <h1>Minha biblioteca <span>♡</span></h1>
-          <p class="subtitle">
-            Um lugar para guardar suas histórias favoritas.
-          </p>
-        </div>
-        <button type="button" id="open-form" class="add-btn">
-          ＋ Nova obra
-        </button>
-      </header>
-
-      <!-- Estatísticas -->
-      <section class="stats" aria-label="Estatísticas da biblioteca">
-        <article class="stat-card">
-          <span>📚</span>
+      <main class="main-content">
+        <!-- Cabeçalho da Página -->
+        <header class="page-header">
           <div>
-            <p>Total de obras</p>
-            <h2 id="total">0</h2>
+            <p class="eyebrow">BEM-VINDA À SUA ESTANTE DIGITAL</p>
+            <h1>Minha biblioteca <span>♡</span></h1>
+            <p class="subtitle">
+              Um lugar para guardar suas histórias favoritas.
+            </p>
           </div>
-        </article>
-        <article class="stat-card">
-          <span>🌷</span>
-          <div>
-            <p>Em andamento</p>
-            <h2 id="progress">0</h2>
-          </div>
-        </article>
-        <article class="stat-card">
-          <span>✨</span>
-          <div>
-            <p>Concluídas</p>
-            <h2 id="completed">0</h2>
-          </div>
-        </article>
-      </section>
-
-      <!-- Biblioteca -->
-      <section class="library">
-        <!-- Título da Coleção e Botão Limpar Filtros -->
-        <div class="section-heading">
-          <div>
-            <h2 id="library-heading">Minha coleção</h2>
-            <p id="result-count" class="muted">0 obras</p>
-          </div>
-          <button type="button" id="clear-filters" class="text-btn">
-            Limpar filtros
+          <button type="button" id="open-form" class="add-btn">
+            ＋ Nova obra
           </button>
-        </div>
+        </header>
 
-        <!-- Barra de Ferramentas (Busca e Ordenação) -->
-        <div class="toolbar">
-          <input
-            id="search"
-            type="search"
-            placeholder="🔍 Pesquisar obra..."
-            autocomplete="off"
-            aria-label="Pesquisar obra"
-          />
-          <select id="status-filter" aria-label="Filtrar por status">
-            <option value="Todos">Todos os status</option>
-            <option value="Quero ler">Quero ler</option>
-            <option value="Lendo">Lendo</option>
-            <option value="Assistindo">Assistindo</option>
-            <option value="Pausado">Pausado</option>
-            <option value="Concluído">Concluído</option>
-            <option value="Abandonado">Abandonado</option>
-          </select>
-          <select id="sort-filter" aria-label="Ordenar obras">
-            <option value="recent">Mais recentes</option>
-            <option value="title">Título (A–Z)</option>
-          </select>
-        </div>
+        <!-- Estatísticas -->
+        <section class="stats" aria-label="Estatísticas da biblioteca">
+          <article class="stat-card">
+            <span>📚</span>
+            <div>
+              <p>Total de obras</p>
+              <h2 id="total">0</h2>
+            </div>
+          </article>
+          <article class="stat-card">
+            <span>🌷</span>
+            <div>
+              <p>Em andamento</p>
+              <h2 id="progress">0</h2>
+            </div>
+          </article>
+          <article class="stat-card">
+            <span>✨</span>
+            <div>
+              <p>Concluídas</p>
+              <h2 id="completed">0</h2>
+            </div>
+          </article>
+        </section>
 
-        <!-- Onde os cards dos livros são renderizados via JS -->
-        <div id="book-grid" class="book-grid"></div>
-      </section>
+        <!-- Biblioteca -->
+        <section class="library">
+          <!-- Título da Coleção e Botão Limpar Filtros -->
+          <div class="section-heading">
+            <div>
+              <h2 id="library-heading">Minha coleção</h2>
+              <p id="result-count" class="muted">0 obras</p>
+            </div>
+            <button type="button" id="clear-filters" class="text-btn">
+              Limpar filtros
+            </button>
+          </div>
 
-      <!-- Rodapé -->
-      <footer>
-        <span>Feito com carinho ♡</span>
-        <span></span>
-      </footer>
-    </main>
+          <!-- Barra de Ferramentas (Busca e Ordenação) -->
+          <div class="toolbar">
+            <input
+              id="search"
+              type="search"
+              placeholder="🔍 Pesquisar obra..."
+              autocomplete="off"
+              aria-label="Pesquisar obra"
+            />
+            <select id="status-filter" aria-label="Filtrar por status">
+              <option value="Todos">Todos os status</option>
+              <option value="Quero ler">Quero ler</option>
+              <option value="Lendo">Lendo</option>
+              <option value="Assistindo">Assistindo</option>
+              <option value="Pausado">Pausado</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Abandonado">Abandonado</option>
+            </select>
+            <select id="sort-filter" aria-label="Ordenar obras">
+              <option value="recent">Mais recentes</option>
+              <option value="title">Título (A–Z)</option>
+            </select>
+          </div>
 
+          <!-- Onde os cards dos livros são renderizados via JS -->
+          <div id="book-grid" class="book-grid"></div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer>
+          <span>Feito com carinho ♡</span>
+          <span></span>
+        </footer>
+      </main>
+    </div>
     <!-- ======================================================================
          FORMULÁRIO DE NOVA OBRA / EDIÇÃO
     ======================================================================= -->
@@ -217,7 +230,7 @@
         <!-- ID oculto (para edição) -->
         <input type="hidden" id="work-id" />
 
-        <!-- Campo: Título -->
+        <!-- Título -->
         <label for="title"> Título <span class="required">*</span> </label>
         <input
           id="title"
@@ -238,7 +251,7 @@
           <option value="Anime">Anime</option>
         </select>
 
-        <!-- Campo: URL da Capa -->
+        <!-- URL da Capa -->
         <label for="cover">URL da capa (opcional)</label>
         <input id="cover" name="cover" type="url" placeholder="https://..." />
         <p class="field-help">
@@ -358,6 +371,78 @@
       </form>
     </dialog>
 
+    <!-- MODAL DE RESENHA -->
+    <dialog id="review-dialog" class="review-dialog">
+      <div class="review-container">
+        <!-- Cabeçalho -->
+        <header class="review-header">
+          <div>
+            <p class="eyebrow">SEU CANTINHO DE MEMÓRIAS ♡</p>
+            <h2 id="review-title">Minha resenha</h2>
+            <p id="review-work-title" class="review-subtitle">Nome da obra</p>
+          </div>
+
+          <button
+            type="button"
+            id="close-review"
+            class="close-btn"
+            aria-label="Fechar resenha"
+          >
+            ✕
+          </button>
+        </header>
+
+        <!-- Avaliação -->
+        <section class="review-rating-section">
+          <label>Sua avaliação</label>
+
+          <div
+            id="review-rating-stars"
+            class="review-rating-stars"
+            role="radiogroup"
+            aria-label="Avaliação de 1 a 5 estrelas"
+          >
+            <button type="button" data-rating="1" aria-label="1 estrela">
+              ★
+            </button>
+            <button type="button" data-rating="2" aria-label="2 estrelas">
+              ★
+            </button>
+            <button type="button" data-rating="3" aria-label="3 estrelas">
+              ★
+            </button>
+            <button type="button" data-rating="4" aria-label="4 estrelas">
+              ★
+            </button>
+            <button type="button" data-rating="5" aria-label="5 estrelas">
+              ★
+            </button>
+          </div>
+
+          <input type="hidden" id="review-rating" value="0" />
+          <p id="review-rating-label">Escolha uma nota ♡</p>
+        </section>
+
+        <!-- Editor Quill -->
+        <section class="review-editor-section">
+          <label>Minha opinião sobre essa obra</label>
+
+          <div id="review-editor"></div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="review-actions">
+          <button type="button" id="cancel-review" class="cancel-btn">
+            Cancelar
+          </button>
+
+          <button type="button" id="save-review" class="add-btn">
+            Salvar resenha ♡
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
     <!-- ======================================================================
          NOTIFICAÇÕES
     ======================================================================= -->
@@ -366,6 +451,7 @@
     <!-- ======================================================================
      JAVASCRIPT 
     ======================================================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script type="module" src="js/main.js"></script>
   </body>
 </html>

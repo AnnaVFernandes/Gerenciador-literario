@@ -20,6 +20,7 @@ export function resetForm() {
   $("#rating").value = "";
   paintStars(0);
   resetGenres();
+  z;
 }
 
 export function openNewForm() {
@@ -85,8 +86,8 @@ export function initDialog() {
       status: $("#status").value,
       author: $("#author").value.trim(),
       genre: $("#genre").value.trim(),
-      progress: 0,
-      total: 0,
+      progress: existing?.progress ?? 0,
+      total: existing?.total ?? 0,
       rating: $("#rating").value,
       notes: $("#notes").value.trim(),
       favorite: existing?.favorite || false,

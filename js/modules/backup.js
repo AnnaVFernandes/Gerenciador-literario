@@ -1,6 +1,7 @@
 import { state, setWorks } from "./state.js";
 import { MAX_BACKUP_SIZE } from "./constants.js";
-import { normalizeWork, persist } from "./storage.js";
+import { normalizeWork } from "./storage.js";
+import { replaceWorks } from "./api.js";
 import { toast } from "./toast.js";
 import { render } from "./render.js";
 import { $ } from "./utils.js";
@@ -51,22 +52,24 @@ export function initBackup() {
 
       const imported = incoming.map(normalizeWork).filter(Boolean);
       const previous = state.works;
+
       setWorks(imported);
-
-      if (
-        !persist(state.works, {
-          onError: () =>
-            toast(
-              "Não foi possível salvar. O armazenamento pode estar cheio; tente reduzir as imagens locais.",
-            ),
-        })
-      ) {
-        setWorks(previous);
-        return;
-      }
-
       render();
-      toast(`Backup importado: ${state.works.length} obra(s) ♡`);
+
+      try {
+        const saved = await replaceWorks(imported);
+        setWorks(saved);
+        render();
+        toast(`Backup importado: ${saved.length} obra(s) ♡`);
+      } catch (apiError) {
+        console.error(apiError);
+        setWorks(previous);
+        render();
+        toast(
+          apiError.message ||
+            "Não foi possível importar o backup. Nada foi alterado.",
+        );
+      }
     } catch (error) {
       toast(error.message || "Não foi possível ler esse backup.");
     }
