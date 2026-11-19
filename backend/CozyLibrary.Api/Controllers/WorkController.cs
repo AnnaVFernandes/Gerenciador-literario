@@ -1,14 +1,18 @@
 ﻿using CozyLibrary.Api.Data;
 using CozyLibrary.Api.Models;
 using CozyLibrary.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace CozyLibrary.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class WorkController : ControllerBase
+
 {
     private readonly CozyLibraryDbContext _context;
     private readonly ICurrentUserService _currentUser;
@@ -38,48 +42,80 @@ public class WorkController : ControllerBase
         return Ok(works);
     }
 
+
     [HttpPost("upload-image")]
-    public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
+    [RequestSizeLimit(3 * 1024 * 1024)]
+    public async Task<IActionResult> UploadImage(
+        [FromForm] IFormFile file)
     {
-        // Verifica se uma imagem foi enviada
+        const long maxSize = 2 * 1024 * 1024;
+
         if (file == null || file.Length == 0)
-            return BadRequest("Nenhuma imagem foi enviada.");
+            return BadRequest("Selecione uma imagem.");
 
-        // Limite de 2 MB
-        if (file.Length > 2 * 1024 * 1024)
-            return BadRequest("A imagem não pode ultrapassar 2 MB.");
+        if (file.Length > maxSize)
+            return BadRequest("O limite é de 2 MB.");
 
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var signatures = new Dictionary<string, byte[]>
+        {
+            [".jpg"] = new byte[] { 0xFF, 0xD8, 0xFF },
+            [".png"] = new byte[] {
+            0x89, 0x50, 0x4E, 0x47,
+            0x0D, 0x0A, 0x1A, 0x0A
+        }
+        };
 
-        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-            return BadRequest("Formato de imagem não permitido.");
+        var extension = Path.GetExtension(
+            file.FileName).ToLowerInvariant();
 
-        var fileName = $"{Guid.NewGuid()}{extension}";
+        if (extension == ".jpeg")
+            extension = ".jpg";
 
-        var imagesFolder = Path.Combine(
-            _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"),
+        if (!signatures.TryGetValue(
+            extension, out var signature))
+            return BadRequest("Use JPG ou PNG.");
+
+        var expectedType = extension == ".png"
+            ? "image/png"
+            : "image/jpeg";
+
+        if (file.ContentType != expectedType)
+            return BadRequest("Tipo de arquivo inválido.");
+
+        await using var input = file.OpenReadStream();
+
+        var header = new byte[signature.Length];
+
+        var read = await input.ReadAsync(header);
+
+        if (read != signature.Length ||
+            !header.SequenceEqual(signature))
+            return BadRequest("Conteúdo inválido.");
+
+        input.Position = 0;
+
+        var folder = Path.Combine(
+            _environment.ContentRootPath,
+            "wwwroot",
             "images"
         );
 
-        Directory.CreateDirectory(imagesFolder);
+        Directory.CreateDirectory(folder);
 
-        var filePath = Path.Combine(imagesFolder, fileName);
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var path = Path.Combine(folder, fileName);
 
-        // Salva a imagem
-        await using (var stream = new FileStream(filePath, FileMode.Create))
+        await using (var output = System.IO.File.Create(path))
         {
-            await file.CopyToAsync(stream);
+            await input.CopyToAsync(output);
         }
-
-        // Endereço público da imagem
-        var imageUrl = $"/images/{fileName}";
 
         return Ok(new
         {
-            url = imageUrl,
-            fileName = fileName
+            url = $"/images/{fileName}"
         });
     }
+
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<Work>> GetWork(Guid id)

@@ -1,0 +1,285 @@
+/* ========================================
+   COZY LIBRARY - TELA DE BOAS-VINDAS
+======================================== */
+
+:root {
+  --pink: #d783aa;
+  --pink-dark: #a9507b;
+  --pink-light: #fcecf4;
+
+  --beige: #f6e9e1;
+  --text: #584552;
+  --muted: #927d88;
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--beige);
+  color: var(--text);
+  font-family: "Nunito", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.welcome-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CABEÇALHO */
+
+.welcome-header {
+  width: min(1200px, 92%);
+  margin: 0 auto;
+  padding: 30px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--pink-dark);
+  font-family: "Quicksand", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.brand-heart {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+  background: var(--pink-light);
+  font-size: 30px;
+}
+
+.header-login {
+  color: var(--pink-dark);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.header-login:hover {
+  text-decoration: underline;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+.welcome-container {
+  width: min(1200px, 92%);
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 65px;
+
+  padding: 35px 0;
+}
+
+/* IMAGEM */
+
+.welcome-illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-image {
+  display: block;
+  width: min(100%, 520px);
+  height: auto;
+
+  object-fit: contain;
+
+  animation: floatBooks 4s ease-in-out infinite;
+}
+
+@keyframes floatBooks {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* TEXTOS */
+
+.welcome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.welcome-label {
+  color: var(--pink-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.welcome-content h1 {
+  font-family: "Quicksand", sans-serif;
+  font-size: clamp(36px, 4.5vw, 60px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.welcome-content h1 span {
+  display: block;
+  color: var(--pink-dark);
+}
+
+.welcome-description {
+  max-width: 490px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* BOTÕES */
+
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 52px;
+  padding: 14px 25px;
+
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 800;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  color: white;
+  background: var(--pink);
+  box-shadow: 0 8px 22px #d783aa40;
+}
+
+.btn-primary:hover {
+  background: var(--pink-dark);
+  transform: translateY(-3px);
+}
+
+.btn-secondary {
+  color: var(--pink-dark);
+  background: var(--white);
+  border: 1px solid #edcadb;
+}
+
+.btn-secondary:hover {
+  background: var(--pink-light);
+  transform: translateY(-3px);
+}
+
+.welcome-message {
+  color: var(--pink-dark);
+  font-size: 13px;
+}
+
+/* RODAPÉ */
+
+.welcome-footer {
+  padding: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 850px) {
+  .welcome-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .welcome-image {
+    width: min(100%, 350px);
+  }
+
+  .welcome-content {
+    align-items: center;
+  }
+
+  .welcome-description {
+    font-size: 15px;
+  }
+
+  .welcome-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-header {
+    padding: 20px 0;
+  }
+
+  .brand {
+    font-size: 17px;
+  }
+
+  .header-login {
+    font-size: 12px;
+  }
+
+  .welcome-content h1 {
+    font-size: 34px;
+  }
+
+  .welcome-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-image {
+    animation: none;
+  }
+}

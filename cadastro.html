@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Criar conta ♡ Cozy Library</title>
+
+    <link rel="icon" href="img/coracao.png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/paginas/autenticacao.css" />
+
+    <script src="js/autenticacao.js" defer></script>
+  </head>
+
+  <body>
+    <main class="auth-page">
+      <section class="auth-illustration">
+        <img src="img/livros-boas-vindas.png" alt="Pilha de livros coloridos" />
+
+        <h2>Uma nova história começa aqui ♡</h2>
+
+        <p>Crie sua conta e comece a organizar seu universo literário.</p>
+      </section>
+
+      <section class="auth-section">
+        <div class="auth-card">
+          <a href="boas-vindas.html" class="back-link"> ← Voltar </a>
+
+          <div class="auth-heart">♡</div>
+
+          <h1>Crie sua conta</h1>
+
+          <p class="auth-subtitle">Seu universo literário está esperando!</p>
+
+          <form id="register-form">
+            <label for="name">Seu nome</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Como podemos chamar você?"
+              autocomplete="name"
+              required
+            />
+
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@email.com"
+              autocomplete="email"
+              required
+            />
+
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Mínimo de 8 caracteres"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+
+            <label for="confirm-password"> Confirmar senha </label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              placeholder="Digite sua senha novamente"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+
+            <button type="submit" class="auth-button">
+              Criar minha conta ♡
+            </button>
+
+            <p
+              id="auth-message"
+              class="auth-message"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+
+          <p class="auth-footer">
+            Já tem uma conta?
+            <a href="login.html">Entrar</a>
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -7,7 +7,7 @@
     <title>Minha histórias ♡</title>
 
     <!-- ======================================================================
-         FAVICON E FONTES
+        FAVICON E FONTES
     ======================================================================= -->
     <link rel="icon" type="image/png" href="img/coracao.png" />
 
@@ -19,7 +19,7 @@
     />
 
     <!-- ======================================================================
-         CSS
+        CSS
     ======================================================================= -->
     <!-- Base -->
     <link rel="stylesheet" href="css/base/variaveis.css" />
@@ -34,6 +34,7 @@
     <!-- Componentes -->
     <link rel="stylesheet" href="css/componentes/botoes.css" />
     <link rel="stylesheet" href="css/componentes/stats.css" />
+    <link rel="stylesheet" href="css/componentes/dashboard.css" />
     <link rel="stylesheet" href="css/componentes/toolbar.css" />
     <link rel="stylesheet" href="css/componentes/book-grid.css" />
     <link rel="stylesheet" href="css/componentes/dialog.css" />
@@ -44,24 +45,12 @@
 
     <!-- Responsivo -->
     <link rel="stylesheet" href="css/responsivo.css" />
-
-    <!-- Editor de texto: Quill.js -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="css/componentes/review-dialog.css" />
-
-    <!-- Modal de resenha -->
-    <link rel="stylesheet" href="css/componentes/review-dialog.css" />
   </head>
-
   <body>
     <!--Abertura do Layout-->
     <div class="app-layout">
       <!-- ======================================================================
-         SIDEBAR (MENU LATERAL E BACKUP)
+        SIDEBAR (MENU LATERAL E BACKUP)
     ======================================================================= -->
       <aside class="sidebar">
         <!-- Cabeçalho da Sidebar -->
@@ -93,6 +82,10 @@
           <button type="button" class="nav-btn" data-filter="Favoritos">
             💕 Favoritos
           </button>
+          <a href="minhas-resenhas.html" class="nav-btn nav-link review-nav">
+            <span>📝</span>
+            <span>Minhas Resenhas</span>
+          </a>
         </nav>
 
         <!-- Área de Backup -->
@@ -116,7 +109,7 @@
       </aside>
 
       <!-- ======================================================================
-         CONTEÚDO PRINCIPAL
+        CONTEÚDO PRINCIPAL
     ======================================================================= -->
       <main class="main-content">
         <!-- Cabeçalho da Página -->
@@ -155,6 +148,49 @@
               <p>Concluídas</p>
               <h2 id="completed">0</h2>
             </div>
+          </article>
+        </section>
+
+        <!-- Gráficos da biblioteca -->
+        <section class="dashboard" aria-label="Gráficos da biblioteca">
+          <article class="chart-card">
+            <h3>Gêneros favoritos</h3>
+            <p class="chart-sub">Os mais presentes na sua estante</p>
+            <div class="chart-box donut">
+              <canvas
+                id="chart-genres"
+                aria-label="Distribuição de gêneros"
+                role="img"
+              ></canvas>
+            </div>
+            <ul id="legend-genres" class="chart-legend"></ul>
+            <p class="chart-empty">
+              Cadastre obras com gêneros para ver o gráfico ♡
+            </p>
+          </article>
+          <article class="chart-card">
+            <h3>Mídias mais consumidas</h3>
+            <p class="chart-sub">Livros, mangás, manhwas e animes</p>
+            <div class="chart-box">
+              <canvas
+                id="chart-media"
+                aria-label="Obras por tipo"
+                role="img"
+              ></canvas>
+            </div>
+            <p class="chart-empty">Adicione obras para ver o gráfico ♡</p>
+          </article>
+          <article class="chart-card">
+            <h3>Obras por status</h3>
+            <p class="chart-sub">Como anda cada história</p>
+            <div class="chart-box">
+              <canvas
+                id="chart-status"
+                aria-label="Obras por status"
+                role="img"
+              ></canvas>
+            </div>
+            <p class="chart-empty">Adicione obras para ver o gráfico ♡</p>
           </article>
         </section>
 
@@ -207,7 +243,7 @@
       </main>
     </div>
     <!-- ======================================================================
-         FORMULÁRIO DE NOVA OBRA / EDIÇÃO
+        FORMULÁRIO DE NOVA OBRA / EDIÇÃO
     ======================================================================= -->
     <dialog id="book-dialog" class="book-dialog">
       <form id="book-form">
@@ -371,87 +407,15 @@
       </form>
     </dialog>
 
-    <!-- MODAL DE RESENHA -->
-    <dialog id="review-dialog" class="review-dialog">
-      <div class="review-container">
-        <!-- Cabeçalho -->
-        <header class="review-header">
-          <div>
-            <p class="eyebrow">SEU CANTINHO DE MEMÓRIAS ♡</p>
-            <h2 id="review-title">Minha resenha</h2>
-            <p id="review-work-title" class="review-subtitle">Nome da obra</p>
-          </div>
-
-          <button
-            type="button"
-            id="close-review"
-            class="close-btn"
-            aria-label="Fechar resenha"
-          >
-            ✕
-          </button>
-        </header>
-
-        <!-- Avaliação -->
-        <section class="review-rating-section">
-          <label>Sua avaliação</label>
-
-          <div
-            id="review-rating-stars"
-            class="review-rating-stars"
-            role="radiogroup"
-            aria-label="Avaliação de 1 a 5 estrelas"
-          >
-            <button type="button" data-rating="1" aria-label="1 estrela">
-              ★
-            </button>
-            <button type="button" data-rating="2" aria-label="2 estrelas">
-              ★
-            </button>
-            <button type="button" data-rating="3" aria-label="3 estrelas">
-              ★
-            </button>
-            <button type="button" data-rating="4" aria-label="4 estrelas">
-              ★
-            </button>
-            <button type="button" data-rating="5" aria-label="5 estrelas">
-              ★
-            </button>
-          </div>
-
-          <input type="hidden" id="review-rating" value="0" />
-          <p id="review-rating-label">Escolha uma nota ♡</p>
-        </section>
-
-        <!-- Editor Quill -->
-        <section class="review-editor-section">
-          <label>Minha opinião sobre essa obra</label>
-
-          <div id="review-editor"></div>
-        </section>
-
-        <!-- Rodapé -->
-        <footer class="review-actions">
-          <button type="button" id="cancel-review" class="cancel-btn">
-            Cancelar
-          </button>
-
-          <button type="button" id="save-review" class="add-btn">
-            Salvar resenha ♡
-          </button>
-        </footer>
-      </div>
-    </dialog>
-
     <!-- ======================================================================
-         NOTIFICAÇÕES
+        NOTIFICAÇÕES
     ======================================================================= -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <!-- ======================================================================
-     JAVASCRIPT 
+    JAVASCRIPT 
     ======================================================================= -->
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script type="module" src="js/main.js"></script>
   </body>
 </html>

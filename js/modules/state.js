@@ -3,6 +3,7 @@ import { getWorks } from "./api.js";
 export const state = {
   works: [],
   activeCategory: "Todas",
+  activeGenre: null,
   toastTimeout: null,
 };
 

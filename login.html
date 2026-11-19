@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Entrar ♡ Cozy Library</title>
+
+    <link rel="icon" href="img/coracao.png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/paginas/autenticacao.css" />
+
+    <script src="js/autenticacao.js" defer></script>
+  </head>
+
+  <body>
+    <main class="auth-page">
+      <section class="auth-illustration">
+        <img src="img/livros-boas-vindas.png" alt="Livros coloridos" />
+
+        <h2>Seu cantinho literário ♡</h2>
+
+        <p>Todas as suas histórias favoritas em um só lugar.</p>
+      </section>
+
+      <section class="auth-section">
+        <div class="auth-card">
+          <a href="boas-vindas.html" class="back-link"> ← Voltar </a>
+
+          <div class="auth-heart">♡</div>
+
+          <h1>Bem-vinda de volta!</h1>
+
+          <p class="auth-subtitle">Que bom ter você aqui novamente ♡</p>
+
+          <form id="login-form">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@email.com"
+              autocomplete="email"
+              required
+            />
+
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Sua senha"
+              autocomplete="current-password"
+              required
+            />
+
+            <button type="submit" class="auth-button">
+              Entrar na biblioteca ♡
+            </button>
+
+            <p
+              id="auth-message"
+              class="auth-message"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+
+          <p class="auth-footer">
+            Ainda não tem uma conta?
+            <a href="cadastro.html">Cadastre-se</a>
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

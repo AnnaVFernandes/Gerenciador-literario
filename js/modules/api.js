@@ -45,7 +45,6 @@ function fromApi(work) {
     total: Number(work.total) || 0,
     rating: work.rating == null ? "" : Number(work.rating),
     notes: work.notes || "",
-    reviewHtml: work.reviewHtml || "",
     favorite: Boolean(work.favorite),
     createdAt,
     updatedAt,

@@ -111,3 +111,37 @@ nav {
   background: var(--pink-light);
   border-radius: 10px;
 }
+
+/* =========================================
+   MINHAS RESENHAS - PADRONIZAÇÃO DO MENU
+========================================= */
+
+.sidebar .navigation .review-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.sidebar .navigation .review-nav:hover {
+  background: var(--pink-light, #fcecf4);
+  color: var(--pink-dark, #a9507b);
+  font-weight: 700;
+}
+
+/* Destaque quando selecionado */
+.sidebar .navigation .review-nav.active {
+  background: var(--pink-light, #fcecf4);
+  color: var(--pink-dark, #a9507b);
+  font-weight: 700;
+}
+
+/* Acessibilidade */
+.sidebar .navigation .review-nav:focus-visible {
+  outline: 2px solid var(--pink-dark, #a9507b);
+  outline-offset: 2px;
+}

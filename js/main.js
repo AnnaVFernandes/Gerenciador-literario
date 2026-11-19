@@ -6,6 +6,7 @@ import { initGenres } from "./modules/genres.js";
 import { initCovers } from "./modules/covers.js";
 import { initBackup } from "./modules/backup.js";
 import { render } from "./modules/render.js";
+import { initDashboardInteractions } from "./modules/dashboard.js";
 import { toast } from "./modules/toast.js";
 
 async function bootstrap() {
@@ -13,6 +14,7 @@ async function bootstrap() {
   initGenres();
   initCovers();
   initFilters();
+  initDashboardInteractions();
   initDialog();
   initGridActions();
   initBackup();

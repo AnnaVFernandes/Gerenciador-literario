@@ -20,7 +20,6 @@ export function resetForm() {
   $("#rating").value = "";
   paintStars(0);
   resetGenres();
-  z;
 }
 
 export function openNewForm() {

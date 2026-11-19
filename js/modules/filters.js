@@ -22,6 +22,7 @@ export function initFilters() {
     $("#status-filter").value = "Todos";
     $("#sort-filter").value = "recent";
     state.activeCategory = "Todas";
+    state.activeGenre = null;
     document
       .querySelectorAll(".nav-btn")
       .forEach((button) =>

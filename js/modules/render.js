@@ -1,3 +1,4 @@
+import { renderDashboard } from "./dashboard.js";
 import { state } from "./state.js";
 import { EMOJI_BY_TYPE } from "./constants.js";
 import { $, escapeHTML, imageOf } from "./utils.js";
@@ -40,6 +41,8 @@ export function render() {
   $("#library-heading").textContent =
     state.activeCategory === "Todas" ? "Minha coleção" : state.activeCategory;
 
+  renderDashboard(state.works);
+
   const grid = $("#book-grid");
 
   if (!filtered.length) {
@@ -62,7 +65,7 @@ export function render() {
           ? `${"★".repeat(ratingValue)}${"☆".repeat(5 - ratingValue)}`
           : "";
 
-      return `<article class="book-card">
+      return `<article class="book-card" data-id="${escapeHTML(work.id)}">
             <div class="cover-wrap">
                 ${image ? `<img class="book-cover" src="${escapeHTML(image)}" alt="Capa de ${escapeHTML(work.title)}" loading="lazy">` : `<div class="cover-placeholder">${EMOJI_BY_TYPE[work.type] || "📚"}</div>`}
                 <button type="button" class="favorite-btn ${work.favorite ? "is-favorite" : ""}" data-action="favorite" data-id="${escapeHTML(work.id)}" aria-label="${work.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${work.favorite ? "♥" : "♡"}</button>

@@ -26,7 +26,7 @@
 
         public string? Notes { get; set; } //Anotações
 
-        public string? ReviewHtml { get; set; } //Resenha em HTML
+        public string? ReviewHtml { get; set; } // Conteúdo do diário de leitura
 
         public bool Favorite { get; set; } = false; //Favorito
 
