@@ -1,4 +1,4 @@
-import { getWorks } from "./js/modules/api.js";
+import { getWorks } from "../../js/modules/api.js";
 const list = document.querySelector("#review-list");
 const message = document.querySelector("#review-message");
 const search = document.querySelector("#review-search");
