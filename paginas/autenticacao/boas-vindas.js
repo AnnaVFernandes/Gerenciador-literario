@@ -1,8 +1,14 @@
 "use strict";
 
-// Tela de boas-vindas do Cozy Library.
-// Os links de login e cadastro são
-// controlados diretamente pelo HTML.
+// ========================================
+// TELA DE BOAS-VINDAS DO COZY LIBRARY
+// ========================================
+
+// O acesso à biblioteca é realizado
+// diretamente pelo link do HTML.
+//
+// O sistema de login, cadastro e perfil
+// será implementado futuramente.
 
 document.addEventListener("DOMContentLoaded", () => {
   document.title = "Bem-vinda ♡ Cozy Library";

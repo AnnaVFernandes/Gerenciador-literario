@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Meu diário ♡</title>
+
+    <!-- CSS compartilhado -->
+    <link rel="stylesheet" href="../../css/base/variaveis.css" />
+
+    <!-- CSS da resenha -->
+    <link rel="stylesheet" href="resenha.css" />
+
+    <!-- Biblioteca de segurança do editor -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+    <!-- JavaScript da resenha -->
+    <script type="module" src="resenha.js"></script>
+  </head>
+
+  <body data-theme="pink">
+    <main class="page">
+      <!-- Cabeçalho -->
+      <header class="top">
+        <a class="back" href="../../index.html"> ← Voltar à biblioteca </a>
+
+        <span id="save-status" role="status"> Carregando… </span>
+      </header>
+
+      <!-- Informações da obra -->
+      <section class="hero">
+        <div class="cover" id="work-cover">📜</div>
+
+        <div>
+          <p class="eyebrow">♡ MEU DIÁRIO DE LEITURA</p>
+
+          <h1 id="work-title">Carregando obra…</h1>
+
+          <p id="work-meta"></p>
+
+          <label class="rating-label">
+            Minha nota ☆★✮★☆
+            <span id="rating-value"></span>
+          </label>
+
+          <div
+            id="rating"
+            class="rating"
+            aria-label="Avaliação de 1 a 5 estrelas"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Datas e tema -->
+      <section class="details">
+        <label>
+          Comecei em
+          <input type="date" id="start-date" />
+        </label>
+
+        <label>
+          Terminei em
+          <input type="date" id="end-date" />
+        </label>
+
+        <label>
+          Tema da página
+          <select id="theme">
+            <option value="pink">🌷 Rosa</option>
+            <option value="lavender">💜 Lavanda</option>
+            <option value="mint">🌿 Menta</option>
+            <option value="peach">🍑 Pêssego</option>
+          </select>
+        </label>
+      </section>
+
+      <!-- Editor da resenha -->
+      <section class="paper">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">ESCREVA SEUS PENSAMENTOS</p>
+            <h2>Minha resenha ♡</h2>
+          </div>
+
+          <button id="save-now" class="primary" type="button">
+            Salvar agora
+          </button>
+        </div>
+
+        <!-- Barra de formatação -->
+        <div class="toolbar" role="toolbar" aria-label="Formatação da resenha">
+          <button data-cmd="bold" title="Negrito">
+            <b>B</b>
+          </button>
+
+          <button data-cmd="italic" title="Itálico">
+            <i>I</i>
+          </button>
+
+          <button data-cmd="underline" title="Sublinhado">
+            <u>U</u>
+          </button>
+
+          <button data-block="h2">Título</button>
+          <button data-block="p">Parágrafo</button>
+
+          <button data-cmd="insertUnorderedList">• Lista</button>
+
+          <button data-block="blockquote">❝ Citação</button>
+
+          <button data-cmd="removeFormat">Limpar formato</button>
+
+          <select id="emoji" aria-label="Inserir emoji">
+            <option value="">✨ Emoji</option>
+            <option>💗</option>
+            <option>🌷</option>
+            <option>✨</option>
+            <option>📚</option>
+            <option>🍅</option>
+            <option>⭐</option>
+            <option>🎀</option>
+            <option>🦋</option>
+          </select>
+        </div>
+
+        <!-- Área para escrever -->
+        <div
+          id="editor"
+          class="editor"
+          contenteditable="true"
+          role="textbox"
+          aria-label="Texto da resenha"
+          aria-multiline="true"
+          data-placeholder="Era uma vez uma história que me marcou…"
+        ></div>
+
+        <p class="hint">
+          Sua resenha é salva automaticamente após você parar de digitar. Para
+          imagens, use a galeria abaixo.
+        </p>
+      </section>
+
+      <!-- Galeria de imagens -->
+      <section class="paper">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">MEMÓRIAS VISUAIS</p>
+            <h2>Minha galeria ✨</h2>
+          </div>
+
+          <label class="primary upload">
+            + Adicionar imagens
+
+            <input
+              id="images"
+              type="file"
+              accept="image/png,image/jpeg"
+              multiple
+              hidden
+            />
+          </label>
+        </div>
+
+        <div id="gallery" class="gallery"></div>
+
+        <p class="hint">PNG ou JPG, até 2 MB por imagem.</p>
+      </section>
+
+      <!-- Mensagens de erro -->
+      <p id="error" class="error" role="alert"></p>
+    </main>
+  </body>
+</html>

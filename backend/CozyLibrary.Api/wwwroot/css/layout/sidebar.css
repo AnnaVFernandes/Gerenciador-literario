@@ -1,0 +1,147 @@
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 250px;
+  height: 100vh;
+  padding: 28px 18px 20px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 8px 30px;
+  flex-shrink: 0;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--pink-light);
+  color: var(--pink-dark);
+  font-size: 27px;
+}
+
+.brand h2 {
+  margin: 0;
+  color: var(--pink-dark);
+  font:
+    700 21px "Quicksand",
+    sans-serif;
+}
+
+.brand p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+nav {
+  display: grid;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 13px 12px;
+  font-size: 14px;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background: var(--pink-light);
+  color: var(--pink-dark);
+  font-weight: 800;
+}
+
+.sidebar-backup {
+  margin-top: auto;
+  padding: 18px 4px 0;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.backup-title {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.backup-btn {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.backup-btn:hover {
+  background: var(--pink-light);
+  color: var(--pink-dark);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--pink-light);
+  border-radius: 10px;
+}
+
+/* =========================================
+   MINHAS RESENHAS - PADRONIZAÇÃO DO MENU
+========================================= */
+
+.sidebar .navigation .review-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.sidebar .navigation .review-nav:hover {
+  background: var(--pink-light, #fcecf4);
+  color: var(--pink-dark, #a9507b);
+  font-weight: 700;
+}
+
+/* Destaque quando selecionado */
+.sidebar .navigation .review-nav.active {
+  background: var(--pink-light, #fcecf4);
+  color: var(--pink-dark, #a9507b);
+  font-weight: 700;
+}
+
+/* Acessibilidade */
+.sidebar .navigation .review-nav:focus-visible {
+  outline: 2px solid var(--pink-dark, #a9507b);
+  outline-offset: 2px;
+}

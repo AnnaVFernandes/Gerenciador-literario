@@ -1,25 +1,40 @@
-﻿using CozyLibrary.Api.Data;
+﻿
+using CozyLibrary.Api.Data;
 using CozyLibrary.Api.Models;
 using CozyLibrary.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace CozyLibrary.Api.Controllers;
 
 [ApiController]
-[Authorize]
-[Route("api/[controller]")]
+[Authorize(Policy = "LibraryAccess")]
+[Route("api/work")]
 public class WorkController : ControllerBase
-
 {
     private readonly CozyLibraryDbContext _context;
     private readonly ICurrentUserService _currentUser;
     private readonly IWebHostEnvironment _environment;
 
+    // ========================================
+    // OBRAS DO USUÁRIO
+    // ========================================
+
+    // No modo local sem login, serão utilizadas
+    // apenas as obras sem proprietário.
+    //
+    // As obras vinculadas a contas existentes
+    // continuam separadas.
+
     private IQueryable<Work> CurrentUserWorks =>
-        _context.Works.Where(work => work.OwnerUserId == _currentUser.UserId);
+        _context.Works.Where(
+            work => work.OwnerUserId == _currentUser.UserId
+        );
+
+    // ========================================
+    // CONSTRUTOR
+    // ========================================
 
     public WorkController(
         CozyLibraryDbContext context,
@@ -30,6 +45,10 @@ public class WorkController : ControllerBase
         _currentUser = currentUser;
         _environment = environment;
     }
+
+    // ========================================
+    // LISTAR OBRAS
+    // ========================================
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Work>>> GetWorks()
@@ -42,6 +61,9 @@ public class WorkController : ControllerBase
         return Ok(works);
     }
 
+    // ========================================
+    // UPLOAD DE IMAGENS
+    // ========================================
 
     [HttpPost("upload-image")]
     [RequestSizeLimit(3 * 1024 * 1024)]
@@ -58,22 +80,30 @@ public class WorkController : ControllerBase
 
         var signatures = new Dictionary<string, byte[]>
         {
-            [".jpg"] = new byte[] { 0xFF, 0xD8, 0xFF },
-            [".png"] = new byte[] {
-            0x89, 0x50, 0x4E, 0x47,
-            0x0D, 0x0A, 0x1A, 0x0A
-        }
+            [".jpg"] = new byte[]
+            {
+                0xFF, 0xD8, 0xFF
+            },
+
+            [".png"] = new byte[]
+            {
+                0x89, 0x50, 0x4E, 0x47,
+                0x0D, 0x0A, 0x1A, 0x0A
+            }
         };
 
         var extension = Path.GetExtension(
-            file.FileName).ToLowerInvariant();
+            file.FileName
+        ).ToLowerInvariant();
 
         if (extension == ".jpeg")
             extension = ".jpg";
 
         if (!signatures.TryGetValue(
             extension, out var signature))
+        {
             return BadRequest("Use JPG ou PNG.");
+        }
 
         var expectedType = extension == ".png"
             ? "image/png"
@@ -90,7 +120,9 @@ public class WorkController : ControllerBase
 
         if (read != signature.Length ||
             !header.SequenceEqual(signature))
+        {
             return BadRequest("Conteúdo inválido.");
+        }
 
         input.Position = 0;
 
@@ -103,9 +135,11 @@ public class WorkController : ControllerBase
         Directory.CreateDirectory(folder);
 
         var fileName = $"{Guid.NewGuid():N}{extension}";
+
         var path = Path.Combine(folder, fileName);
 
-        await using (var output = System.IO.File.Create(path))
+        await using (
+            var output = System.IO.File.Create(path))
         {
             await input.CopyToAsync(output);
         }
@@ -116,6 +150,9 @@ public class WorkController : ControllerBase
         });
     }
 
+    // ========================================
+    // BUSCAR OBRA POR ID
+    // ========================================
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<Work>> GetWork(Guid id)
@@ -124,29 +161,50 @@ public class WorkController : ControllerBase
             .AsNoTracking()
             .FirstOrDefaultAsync(work => work.Id == id);
 
-        return work is null ? NotFound() : Ok(work);
+        return work is null
+            ? NotFound()
+            : Ok(work);
     }
 
+    // ========================================
+    // CADASTRAR NOVA OBRA
+    // ========================================
+
     [HttpPost]
-    public async Task<ActionResult<Work>> CreateWork([FromBody] Work work)
+    public async Task<ActionResult<Work>> CreateWork(
+        [FromBody] Work work)
     {
         if (string.IsNullOrWhiteSpace(work.Title))
             return BadRequest("O título é obrigatório.");
 
         work.Id = Guid.NewGuid();
+
         work.OwnerUserId = _currentUser.UserId;
+
         work.CreatedAt = DateTime.UtcNow;
         work.UpdatedAt = DateTime.UtcNow;
+
         work.Title = work.Title.Trim();
 
         _context.Works.Add(work);
+
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetWork), new { id = work.Id }, work);
+        return CreatedAtAction(
+            nameof(GetWork),
+            new { id = work.Id },
+            work
+        );
     }
 
+    // ========================================
+    // ATUALIZAR OBRA
+    // ========================================
+
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<Work>> UpdateWork(Guid id, [FromBody] Work updatedWork)
+    public async Task<ActionResult<Work>> UpdateWork(
+        Guid id,
+        [FromBody] Work updatedWork)
     {
         if (string.IsNullOrWhiteSpace(updatedWork.Title))
             return BadRequest("O título é obrigatório.");
@@ -154,7 +212,8 @@ public class WorkController : ControllerBase
         var work = await CurrentUserWorks
             .FirstOrDefaultAsync(item => item.Id == id);
 
-        if (work is null) return NotFound();
+        if (work is null)
+            return NotFound();
 
         work.Title = updatedWork.Title.Trim();
         work.Type = updatedWork.Type;
@@ -166,38 +225,78 @@ public class WorkController : ControllerBase
         work.Total = updatedWork.Total;
         work.Rating = updatedWork.Rating;
         work.Notes = updatedWork.Notes;
-        work.ReviewHtml = updatedWork.ReviewHtml;
         work.Favorite = updatedWork.Favorite;
+
+        // Preserva a resenha existente quando
+        // o frontend não envia uma nova resenha.
+
+        if (updatedWork.ReviewHtml != null)
+        {
+            work.ReviewHtml = updatedWork.ReviewHtml;
+        }
+
         work.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
         return Ok(work);
     }
 
-    [HttpPut("replace")]
-    public async Task<IActionResult> ReplaceWorks([FromBody] List<Work> incomingWorks)
-    {
-        if (incomingWorks.Any(work => string.IsNullOrWhiteSpace(work.Title)))
-            return BadRequest("Todas as obras precisam ter um título.");
+    // ========================================
+    // IMPORTAR BACKUP
+    // ========================================
 
-        await using var transaction = await _context.Database.BeginTransactionAsync();
-        var currentWorks = await CurrentUserWorks.ToListAsync();
+    [HttpPut("replace")]
+    public async Task<IActionResult> ReplaceWorks(
+        [FromBody] List<Work> incomingWorks)
+    {
+        if (incomingWorks.Any(
+            work => string.IsNullOrWhiteSpace(work.Title)))
+        {
+            return BadRequest(
+                "Todas as obras precisam ter um título."
+            );
+        }
+
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync();
+
+        var currentWorks = await CurrentUserWorks
+            .ToListAsync();
+
+        // Remove somente as obras da biblioteca atual.
+
         _context.Works.RemoveRange(currentWorks);
 
         var now = DateTime.UtcNow;
+
         foreach (var work in incomingWorks)
         {
             work.Id = Guid.NewGuid();
+
             work.OwnerUserId = _currentUser.UserId;
+
+            work.Title = work.Title.Trim();
+
             work.CreatedAt = now;
             work.UpdatedAt = now;
         }
 
         _context.Works.AddRange(incomingWorks);
+
         await _context.SaveChangesAsync();
+
         await transaction.CommitAsync();
-        return Ok(new { imported = incomingWorks.Count });
+
+        return Ok(new
+        {
+            imported = incomingWorks.Count
+        });
     }
+
+    // ========================================
+    // EXCLUIR OBRA
+    // ========================================
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteWork(Guid id)
@@ -205,10 +304,13 @@ public class WorkController : ControllerBase
         var work = await CurrentUserWorks
             .FirstOrDefaultAsync(item => item.Id == id);
 
-        if (work is null) return NotFound();
+        if (work is null)
+            return NotFound();
 
         _context.Works.Remove(work);
+
         await _context.SaveChangesAsync();
+
         return NoContent();
     }
 }

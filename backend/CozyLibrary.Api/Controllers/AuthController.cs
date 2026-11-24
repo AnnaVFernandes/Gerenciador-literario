@@ -1,5 +1,4 @@
-﻿
-using CozyLibrary.Api.DTOs;
+﻿using CozyLibrary.Api.DTOs;
 using CozyLibrary.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -120,6 +119,15 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("csrf")]
+    public IActionResult Csrf([FromServices] Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery)
+    {
+        Response.Headers["Cache-Control"] = "no-store";
+        return Ok(new { token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken });
+    }
+
+    [Authorize]
+    [ValidateAntiForgeryToken]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {

@@ -1,6 +1,4 @@
-/* ========================================
-   COZY LIBRARY - LOGIN E CADASTRO
-======================================== */
+/* 
 
 :root {
   --pink: #d783aa;
@@ -30,7 +28,7 @@ body {
   grid-template-columns: 1fr 1fr;
 }
 
-/* LADO DA ILUSTRAÇÃO */
+LADO DA ILUSTRAÇÃO
 
 .auth-illustration {
   background: var(--beige);
@@ -63,7 +61,7 @@ body {
   line-height: 1.7;
 }
 
-/* ÁREA DO FORMULÁRIO */
+ÁREA DO FORMULÁRIO
 
 .auth-section {
   display: flex;
@@ -128,7 +126,7 @@ body {
   font-size: 14px;
 }
 
-/* CAMPOS */
+CAMPOS
 
 .auth-card form {
   display: flex;
@@ -172,7 +170,7 @@ body {
   color: #b5a3af;
 }
 
-/* BOTÃO */
+BOTÃO
 
 .auth-button {
   width: 100%;
@@ -234,7 +232,7 @@ body {
   text-decoration: underline;
 }
 
-/* CELULAR */
+CELULAR
 
 @media (max-width: 850px) {
   .auth-page {
@@ -261,3 +259,4 @@ body {
     padding: 25px;
   }
 }
+*/

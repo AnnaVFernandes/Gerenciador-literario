@@ -1,28 +1,93 @@
-const API = "http://localhost:5272";
-const id = new URLSearchParams(location.search).get("id");
-const $ = (s) => document.querySelector(s);
+"use strict";
 
-let work,
-  data = { html: "", start: "", end: "", theme: "pink", images: [] },
-  timer,
-  revision = 0,
-  saving = false;
+// ========================================
+// 1. CONFIGURAÇÕES
+// ========================================
 
-const status = (t) => ($("#save-status").textContent = t);
-const error = (t) => ($("#error").textContent = t);
-const clean = (html) =>
-  window.DOMPurify
-    ? DOMPurify.sanitize(html, {
-        USE_PROFILES: { html: true },
-        FORBID_TAGS: ["style", "iframe", "form", "svg", "math"],
-      })
-    : "";
+// A API usa o mesmo domínio do site.
+// Exemplo: https://localhost:7174
+const API = window.location.origin;
 
+// Identifica a obra pela URL:
+// resenha.html?id=...
+const id = new URLSearchParams(window.location.search).get("id");
+
+// Facilita a seleção de elementos HTML.
+const $ = (selector) => document.querySelector(selector);
+
+// Dados da obra e da resenha.
+let work = null;
+
+let data = {
+  html: "",
+  start: "",
+  end: "",
+  theme: "pink",
+  images: [],
+};
+
+// Controle do salvamento automático.
+let timer = null;
+let revision = 0;
+let lastSavedRevision = -1;
+let saving = false;
+let saveFailed = false;
+
+function status(message) {
+  const element = $("#save-status");
+
+  if (element) {
+    element.textContent = message;
+  }
+}
+
+function error(message) {
+  const element = $("#error");
+
+  if (element) {
+    element.textContent = message;
+  }
+}
+
+function clean(html) {
+  if (!window.DOMPurify) {
+    return "";
+  }
+
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+    FORBID_TAGS: ["style", "iframe", "form", "svg", "math"],
+  });
+}
+
+// COMUNICAÇÃO COM A API
 async function req(path, opts = {}) {
-  let r = await fetch(API + path, opts);
-  if (!r.ok)
-    throw new Error((await r.text()).slice(0, 300) || "Erro HTTP " + r.status);
-  return r.json();
+  let response;
+
+  try {
+    response = await fetch(API + path, {
+      ...opts,
+      credentials: "same-origin",
+    });
+  } catch {
+    throw new Error("Não foi possível conectar ao servidor.");
+  }
+
+  if (response.status === 401) {
+    throw new Error("Sua sessão expirou. Faça login novamente.");
+  }
+
+  if (!response.ok) {
+    const message = await response.text().catch(() => "");
+
+    throw new Error(message.slice(0, 300) || `Erro HTTP ${response.status}`);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json();
 }
 
 function snapshot() {
@@ -30,106 +95,169 @@ function snapshot() {
   data.start = $("#start-date").value;
   data.end = $("#end-date").value;
   data.theme = $("#theme").value;
+
   return JSON.stringify(data);
 }
 
+// AGENDAR SALVAMENTO AUTOMÁTICO
 function schedule() {
   revision++;
+
+  saveFailed = false;
+
   status("Alterações pendentes…");
+
   clearTimeout(timer);
-  timer = setTimeout(save, 850);
+
+  timer = setTimeout(() => {
+    save();
+  }, 850);
 }
 
+// SALVAR RESENHA
 async function save() {
-  if (!work || saving) return;
-  const at = revision;
+  if (!work || saving) {
+    return;
+  }
+
+  if (revision === lastSavedRevision) {
+    return;
+  }
+
+  clearTimeout(timer);
+
+  const currentRevision = revision;
   const payload = snapshot();
+
+  const workToSave = {
+    ...work,
+    reviewHtml: payload,
+    rating: Number(work.rating) || 0,
+  };
+
   saving = true;
+
   status("Salvando…");
   error("");
+
   try {
-    const r = await req(`/api/work/${encodeURIComponent(id)}`, {
+    const savedWork = await req(`/api/work/${encodeURIComponent(id)}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...work,
-        reviewHtml: payload,
-        rating: Number(work.rating) || 0,
-      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(workToSave),
     });
-    work = r;
-    status("✓ Salvo");
-  } catch (e) {
+
+    const latestRating = work.rating;
+
+    work = savedWork;
+
+    if (revision !== currentRevision) {
+      work.rating = latestRating;
+    }
+
+    lastSavedRevision = currentRevision;
+    saveFailed = false;
+
+    if (revision === currentRevision) {
+      status("✓ Salvo");
+    } else {
+      status("Alterações pendentes…");
+    }
+  } catch (err) {
+    saveFailed = true;
+
     status("Não foi possível salvar");
-    error("Erro ao salvar: " + e.message);
+
+    error("Erro ao salvar: " + err.message);
   } finally {
     saving = false;
-    if (revision !== at) {
+
+    if (revision !== currentRevision) {
       clearTimeout(timer);
-      timer = setTimeout(save, 400);
+
+      timer = setTimeout(() => {
+        save();
+      }, 400);
     }
   }
 }
 
+//AVALIAÇÃO POR ESTRELAS
 function rating() {
   const root = $("#rating");
+
   root.replaceChildren();
 
+  const currentRating = Number(work.rating) || 0;
+
   for (let i = 1; i <= 5; i++) {
-    const b = document.createElement("button");
+    const button = document.createElement("button");
 
-    b.type = "button";
-    b.textContent = "★";
+    button.type = "button";
+    button.textContent = "★";
 
-    const currentRating = Number(work.rating) || 0;
+    button.className = i <= currentRating ? "active" : "";
 
-    b.className = i <= currentRating ? "active" : "";
+    button.setAttribute("aria-label", `${i} estrelas`);
 
-    b.setAttribute("aria-label", `${i} estrelas`);
-    b.setAttribute("aria-pressed", String(i === currentRating));
+    button.setAttribute("aria-pressed", String(i === currentRating));
 
-    b.onclick = () => {
+    button.onclick = () => {
       const current = Number(work.rating) || 0;
 
-      // Se clicar na nota atual, remove a avaliação.
-      // Caso contrário, seleciona a nova nota.
       work.rating = current === i ? 0 : i;
 
       rating();
       schedule();
     };
 
-    root.append(b);
+    root.append(button);
   }
 
-  $("#rating-value").textContent = Number(work.rating)
-    ? `${work.rating}/5`
+  $("#rating-value").textContent = currentRating
+    ? `${currentRating}/5`
     : "Sem nota";
 }
 
+// GALERIA DE IMAGENS
 function gallery() {
   const root = $("#gallery");
+
   root.replaceChildren();
-  data.images.forEach((src, i) => {
-    const f = document.createElement("figure"),
-      img = document.createElement("img"),
-      b = document.createElement("button");
-    img.src = src;
-    img.alt = `Imagem ${i + 1} da resenha`;
-    b.textContent = "×";
-    b.title = "Remover imagem";
-    b.onclick = () => {
-      data.images.splice(i, 1);
+
+  data.images.forEach((src, index) => {
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    const button = document.createElement("button");
+
+    image.src = src;
+    image.alt = `Imagem ${index + 1} da resenha`;
+    image.loading = "lazy";
+
+    button.type = "button";
+    button.textContent = "×";
+    button.title = "Remover imagem";
+
+    button.setAttribute("aria-label", `Remover imagem ${index + 1}`);
+
+    button.onclick = () => {
+      data.images.splice(index, 1);
+
       gallery();
       schedule();
     };
-    f.append(img, b);
-    root.append(f);
+
+    figure.append(image, button);
+    root.append(figure);
   });
 }
 
+// 10. UPLOAD DE IMAGENS
 async function upload(files) {
   for (const file of files) {
+    // Aceita somente PNG e JPG até 2 MB.
     if (
       !["image/png", "image/jpeg"].includes(file.type) ||
       file.size > 2 * 1024 * 1024
@@ -137,116 +265,195 @@ async function upload(files) {
       error("Use PNG/JPG de até 2 MB.");
       continue;
     }
+
     try {
       status("Enviando imagem…");
-      const fd = new FormData();
-      fd.append("file", file);
-      const r = await req("/api/work/upload-image", {
+
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      const response = await req("/api/work/upload-image", {
         method: "POST",
-        body: fd,
+        body: formData,
       });
-      const url = new URL(r.url, API);
-      if (url.origin !== new URL(API).origin) throw Error("URL inválida");
-      data.images.push(url.href);
+      const url = new URL(response.url, API);
+
+      if (url.origin !== window.location.origin) {
+        throw new Error("URL de imagem inválida.");
+      }
+
+      data.images.push(url.pathname);
+
       gallery();
       schedule();
-    } catch (e) {
-      error("Falha no upload: " + e.message);
+    } catch (err) {
+      error("Falha no upload: " + err.message);
+
+      status("Erro ao enviar imagem");
     }
   }
 }
 
+//  CARREGAR RESENHA
 async function init() {
   if (!id) {
     error("Obra não identificada. Volte à biblioteca.");
     return;
   }
+
   try {
+    // Busca a obra no PostgreSQL pela API.
     work = await req(`/api/work/${encodeURIComponent(id)}`);
+
+    // Recupera a resenha salva.
     try {
       const stored = JSON.parse(work.reviewHtml || "{}");
-      if (stored && typeof stored === "object")
+
+      if (stored && typeof stored === "object" && !Array.isArray(stored)) {
         data = {
           ...data,
           ...stored,
           images: Array.isArray(stored.images) ? stored.images : [],
         };
+      }
     } catch {
+      // Compatibilidade com resenhas antigas
+      // que armazenavam apenas HTML.
       data.html = work.reviewHtml || "";
     }
+
+    // Informações da obra.
     $("#work-title").textContent = work.title;
+
     $("#work-meta").textContent = [work.type, work.author, work.status]
       .filter(Boolean)
       .join(" · ");
+
+    // Capa da obra.
     if (work.coverUrl) {
-      const img = document.createElement("img");
-      img.src = new URL(work.coverUrl, API).href;
-      img.alt = "Capa";
-      $("#work-cover").replaceChildren(img);
+      const image = document.createElement("img");
+
+      image.src = new URL(work.coverUrl, API).href;
+
+      image.alt = "Capa de " + work.title;
+
+      $("#work-cover").replaceChildren(image);
     }
+
+    // Conteúdo da resenha.
     $("#editor").innerHTML = clean(data.html || "");
+
+    // Datas.
     $("#start-date").value = data.start || "";
     $("#end-date").value = data.end || "";
-    $("#theme").value = ["pink", "lavender", "mint", "peach"].includes(
-      data.theme,
-    )
+
+    // Tema.
+    const availableThemes = ["pink", "lavender", "mint", "peach"];
+
+    $("#theme").value = availableThemes.includes(data.theme)
       ? data.theme
       : "pink";
+
     document.body.dataset.theme = $("#theme").value;
+
+    // Componentes visuais.
     rating();
     gallery();
+
+    // A versão inicial corresponde
+    // aos dados carregados do servidor.
+    lastSavedRevision = revision;
+
     status("Pronto para escrever ♡");
-  } catch (e) {
-    error("Não foi possível abrir a obra: " + e.message);
+  } catch (err) {
+    error("Não foi possível abrir a obra: " + err.message);
+
     status("Erro");
   }
 }
 
+// Salva quando o texto muda.
 $("#editor").addEventListener("input", schedule);
-["#start-date", "#end-date"].forEach((s) =>
-  $(s).addEventListener("change", schedule),
-);
+
+// Salva quando as datas mudam.
+["#start-date", "#end-date"].forEach((selector) => {
+  $(selector).addEventListener("change", schedule);
+});
+
 $("#theme").addEventListener("change", () => {
   document.body.dataset.theme = $("#theme").value;
+
   schedule();
 });
+
 $("#save-now").onclick = () => {
   clearTimeout(timer);
-  revision++;
+
   save();
 };
-$(".toolbar").addEventListener("click", (e) => {
-  const b = e.target.closest("button");
-  if (!b) return;
+
+$(".toolbar").addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+
+  if (!button) {
+    return;
+  }
+
   $("#editor").focus();
-  if (b.dataset.cmd) document.execCommand(b.dataset.cmd, false, null);
-  if (b.dataset.block)
-    document.execCommand("formatBlock", false, b.dataset.block);
+
+  if (button.dataset.cmd) {
+    document.execCommand(button.dataset.cmd, false, null);
+  }
+
+  if (button.dataset.block) {
+    document.execCommand("formatBlock", false, button.dataset.block);
+  }
+
   schedule();
 });
-$("#emoji").onchange = (e) => {
-  if (!e.target.value) return;
+
+$("#emoji").onchange = (event) => {
+  if (!event.target.value) {
+    return;
+  }
+
   $("#editor").focus();
-  document.execCommand("insertText", false, e.target.value);
-  e.target.value = "";
+
+  document.execCommand("insertText", false, event.target.value);
+
+  event.target.value = "";
+
   schedule();
 };
-$("#images").onchange = (e) => {
-  upload([...e.target.files]);
-  e.target.value = "";
+
+$("#images").onchange = (event) => {
+  const files = [...event.target.files];
+
+  upload(files);
+
+  event.target.value = "";
 };
-document.addEventListener("paste", (e) => {
-  const files = [...(e.clipboardData?.files || [])].filter((f) =>
-    f.type.startsWith("image/"),
+
+document.addEventListener("paste", (event) => {
+  const files = [...(event.clipboardData?.files || [])].filter((file) =>
+    file.type.startsWith("image/"),
   );
-  if (files.length) {
-    e.preventDefault();
+
+  if (files.length > 0) {
+    event.preventDefault();
+
     upload(files);
   }
 });
-window.addEventListener("beforeunload", (e) => {
-  if (saving || $("#save-status").textContent.includes("pendentes")) {
-    e.preventDefault();
+
+window.addEventListener("beforeunload", (event) => {
+  const hasPendingChanges = revision !== lastSavedRevision;
+
+  if (saving || hasPendingChanges || saveFailed) {
+    event.preventDefault();
+    event.returnValue = "";
   }
 });
+
 init();

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fcecf4" />
+
+    <title>Minhas Resenhas ♡</title>
+
+    <!-- Fontes -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS compartilhado -->
+    <link rel="stylesheet" href="../../css/base/variaveis.css" />
+    <link rel="stylesheet" href="../../css/base/reset.css" />
+    <link rel="stylesheet" href="../../css/layout/sidebar.css" />
+    <link rel="stylesheet" href="../../css/layout/main.css" />
+
+    <!-- CSS desta página -->
+    <link rel="stylesheet" href="resenhas-lista.css" />
+
+    <!-- JavaScript -->
+    <script type="module" src="minhas-resenhas.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../img/coracao.png" />
+  </head>
+
+  <body>
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">♡</span>
+
+        <div>
+          <h2>Menu</h2>
+          <p>Seu universo</p>
+        </div>
+      </div>
+
+      <!-- Navegação -->
+      <nav aria-label="Menu da biblioteca">
+        <a class="nav-btn nav-link" href="../../index.html">
+          💻 Minhas Histórias
+        </a>
+      </nav>
+
+      <a class="sidebar-back-link" href="../../index.html">
+        ← Voltar à biblioteca
+      </a>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="main-content reviews-page">
+      <!-- Título da página -->
+      <header class="reviews-heading">
+        <div>
+          <p class="eyebrow">SEU UNIVERSO LITERÁRIO</p>
+
+          <h1>Minhas Resenhas <span>♡</span></h1>
+
+          <p class="subtitle">
+            Um cantinho especial para guardar suas opiniões e lembranças.
+          </p>
+        </div>
+      </header>
+
+      <!-- Painel das resenhas -->
+      <section class="reviews-panel" aria-label="Seus diários de leitura">
+        <div class="reviews-panel-top">
+          <h2>Meus diários <span>✿</span></h2>
+
+          <!-- Pesquisa -->
+          <label class="review-search-wrap" for="review-search">
+            <span aria-hidden="true">⌕</span>
+
+            <input
+              id="review-search"
+              type="search"
+              placeholder="Pesquisar uma obra..."
+              autocomplete="off"
+              aria-label="Pesquisar por título, autor ou tipo"
+            />
+          </label>
+        </div>
+
+        <div class="reviews-panel-divider"></div>
+
+        <!-- Quantidade de resenhas -->
+        <span class="review-count" id="review-count" aria-live="polite"></span>
+
+        <!-- Animação de carregamento -->
+        <div
+          class="review-loading"
+          id="review-loading"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="review-loading-art" aria-hidden="true">⋆📖⋆</div>
+
+          <p>Carregando suas obras...</p>
+
+          <div class="review-loading-dots" aria-hidden="true">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+        </div>
+
+        <!-- Mensagens -->
+        <p id="review-message" role="status" aria-live="polite"></p>
+
+        <!-- Lista gerada pelo JavaScript -->
+        <div id="review-list" class="review-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

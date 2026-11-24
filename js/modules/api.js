@@ -1,20 +1,28 @@
-// Endereço HTTP LaunchSettings.json do projeto backend
+"use strict";
 
-const API_URL = "http://localhost:5272/api/work";
+const API_URL = "/api/work";
 
 async function request(path = "", options = {}) {
   let response;
+
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...options,
+      credentials: "same-origin",
       headers: {
         ...(options.body ? { "Content-Type": "application/json" } : {}),
         ...options.headers,
       },
     });
-  } catch (error) {
+  } catch {
     throw new Error(
-      "Não foi possível acessar a API. Confira se o backend está em execução em http://localhost:5272.",
+      "Não foi possível acessar a API. Verifique se o servidor está funcionando.",
+    );
+  }
+
+  if (response.status === 401) {
+    throw new Error(
+      "Sua sessão não está ativa. Entre na sua conta para continuar.",
     );
   }
 
@@ -24,11 +32,13 @@ async function request(path = "", options = {}) {
   }
 
   if (response.status === 204) return null;
+
   return response.json();
 }
 
 function fromApi(work) {
   const cover = work.coverUrl || work.coverURL || "";
+
   const createdAt = Date.parse(work.createdAt) || Date.now();
   const updatedAt = Date.parse(work.updatedAt) || Date.now();
 
@@ -77,6 +87,7 @@ export async function createWork(work) {
     method: "POST",
     body: JSON.stringify(toApi(work)),
   });
+
   return fromApi(saved);
 }
 
@@ -90,7 +101,9 @@ export async function updateWork(work) {
 }
 
 export async function deleteWork(id) {
-  await request(`/${encodeURIComponent(id)}`, { method: "DELETE" });
+  await request(`/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
 }
 
 export async function replaceWorks(works) {
@@ -98,5 +111,6 @@ export async function replaceWorks(works) {
     method: "PUT",
     body: JSON.stringify(works.map(toApi)),
   });
+
   return getWorks();
 }

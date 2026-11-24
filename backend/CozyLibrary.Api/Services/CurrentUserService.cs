@@ -6,11 +6,35 @@ public sealed class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+    // CONSTRUTOR
+    public CurrentUserService(
+        IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string? UserId => _httpContextAccessor.HttpContext?.User
-        .FindFirstValue(ClaimTypes.NameIdentifier);
+    // IDENTIFICAÇÃO DO USUÁRIO
+    public string? UserId
+    {
+        get
+        {
+            var user = _httpContextAccessor
+                .HttpContext?.User;
+
+            // Sem autenticação, utiliza
+            // a biblioteca local.
+
+            if (user?.Identity?.IsAuthenticated != true)
+            {
+                return null;
+            }
+
+            // Retorna o ID do usuário autenticado.
+            // Mantido para uso futuro do perfil.
+
+            return user.FindFirstValue(
+                ClaimTypes.NameIdentifier
+            );
+        }
+    }
 }
